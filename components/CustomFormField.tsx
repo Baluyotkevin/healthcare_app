@@ -40,24 +40,24 @@ const RenderField = ( { field, props } : { field: any, props: CustomProps}) => {
         case FormFieldType.INPUT:
             return (
                 <div className="flex rounded-md border border-dark-500 bg-dark-400">
-                    {iconSrc && (
-                        <Image
-                            src={iconSrc}
-                            height={24}
-                            width={24}
-                            alt={iconAlt || 'icon'}
-                            className='ml-2'
-                        />
-                    )}
-                    <FormControl>
-                        <Input 
-                            placeholder={placeholder}
-                            {...field}
-                            className='shad-input border-0'
-                        />
-                    </FormControl>
+                {props.iconSrc && (
+                    <Image
+                    src={props.iconSrc}
+                    height={24}
+                    width={24}
+                    alt={props.iconAlt || "icon"}
+                    className="ml-2"
+                    />
+                )}
+                <FormControl>
+                    <Input
+                    placeholder={props.placeholder}
+                    {...field}
+                    className="shad-input border-0"
+                    />
+                </FormControl>
                 </div>
-            )
+            );
         case FormFieldType.PHONE_INPUT:
             return (
                 <FormControl>
@@ -76,28 +76,25 @@ const RenderField = ( { field, props } : { field: any, props: CustomProps}) => {
             break;
     }
 }
+const CustomFormField = (props: CustomProps) => {
+  const { control, name, label } = props;
 
-const CustomFormField = ( props : CustomProps) => {
-    const { control, fieldType, name, label } = props
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem className="flex-1">
+          {props.fieldType !== FormFieldType.CHECKBOX && label && (
+            <FormLabel className="shad-input-label">{label}</FormLabel>
+          )}
+          <RenderField field={field} props={props} />
 
-
-    return (
-        <FormField
-            control={control}
-            name={name}
-            render={({ field }) => (
-            <FormItem className='flex-1'>
-                {fieldType !== FormFieldType.CHECKBOX && label && (
-                    <FormLabel>{label}</FormLabel>
-                )}
-
-                <RenderField field={field} props={props} />
-
-                <FormMessage className='shad-error' />
-            </FormItem>
-            )}
-        />
-    )
-}
+          <FormMessage className="shad-error" />
+        </FormItem>
+      )}
+    />
+  );
+};
 
 export default CustomFormField
