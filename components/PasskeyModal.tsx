@@ -5,7 +5,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescript
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from './ui/input-otp';
-import { encryptKey } from '@/lib/utils';
+import { decryptKey, encryptKey } from '@/lib/utils';
 
 const PasskeyModal = () => {
     const router = useRouter();
@@ -17,8 +17,10 @@ const PasskeyModal = () => {
     const encryptedKey = typeof window !== 'undefined' ? window.localStorage.getItem('accessKey') : null;
 
     useEffect(() => {
+        const accessKey = encryptedKey && decryptKey(encryptedKey)
+
         if (path) {
-            if (passkey === process.env.NEXT_PUBLIC_ADMIN_PASSKEY) {
+            if (accessKey === process.env.NEXT_PUBLIC_ADMIN_PASSKEY) {
                 setOpen(false)
                 router.push('/admin')
             } else {
@@ -34,7 +36,7 @@ const PasskeyModal = () => {
 
     const validatePasskey = (e : React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
-        console.log('hello')
+
         if (passkey === process.env.NEXT_PUBLIC_ADMIN_PASSKEY) {
             const encryptedKey = encryptKey(passkey)
 
@@ -83,7 +85,7 @@ const PasskeyModal = () => {
                 </div>
 
                 <AlertDialogFooter>
-                    <AlertDialogAction onClick={(e) => setPasskey(e)} className='shad-primary-btn w-full'>
+                    <AlertDialogAction onClick={(e) => validatePasskey(e)} className='shad-primary-btn w-full'>
                         Enter Passkey
                     </AlertDialogAction>
                 </AlertDialogFooter>
